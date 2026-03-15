@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "rujta" "\0"
+            VALUE "FileDescription", "Rujta" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "rujta" "\0"
+            VALUE "InternalName", "Rujta" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "rujta.exe" "\0"
-            VALUE "ProductName", "rujta" "\0"
+            VALUE "OriginalFilename", "Rujta.exe" "\0"
+            VALUE "ProductName", "Rujta" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

@@ -1,4 +1,4 @@
-# rujta
+# Rujta
 
 A new Flutter project.
 
