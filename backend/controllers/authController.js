@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { createUser, findUser, verifyUserEmail } from '../model/userModel.js';
+import { createUser, findUser, verifyUserEmail,updatePassword } from '../model/userModel.js';
 import jwt from 'jsonwebtoken';
 import { validatePassword,validateConfirmPassword } from '../utills/validators.js';
 import { generateOTP,saveOTP,verifyOTP } from '../utills/otp.js';
@@ -125,4 +125,73 @@ export const verifyUserOTP=(req,res)=>{
       res.status(200).json({message:'OTP verified successfully'})
     })
 }
-export default {registerUser,login,verifyEmail};
+export const forgotPassword=(req,res)=>{
+  const {email}=req.body;
+  if(!email)
+    return res.status(400).json({message:'Please provide email'});
+  findUser(email,(err,result)=>{
+    if(err)
+      return res.status(500).json({message:err.message});
+    if(result.length===0)
+      return res.status(404).json({message:'No account found with this email'});
+    const User=result[0];
+    const otp=generateOTP();
+    saveOTP(email,User.name,otp,'resetPassword',(err)=>{
+      if(err)
+      return res.status(500).json({message:err.message});
+    res.status(200).json({message:'OTP sent to your email'});
+    });
+  });
+};
+export const verifyResetOTP=(req,res)=>{
+  const {otp}=req.body;
+  if(!otp)
+    res.status(400).json({message:'Please provide OTP'});
+  db.query(
+    `SELECT * FROM otps WHERE otp=? AND expires_at >NOW() AND is_used =FALSE`,[otp],
+    (err,result)=>{
+      if(err) return res.status(500).json({message:err.message});
+      if(result.length===0)
+        return res.status(400).json({ message: 'Invalid or expired OTP' });
+        const email=result[0].email;
+        db.query('UPDATE otps SET is_used =TRUE WHERE otp=?',[otp],(err)=>{
+          if (err) return res.status(500).json({ message: err.message });
+          const resetToken=jwt.sign({email},process.env.ACCESSTOKEN,{expiresIn:'10m'});
+          res.status(200).json({
+            message:'OTP verified successfully',
+           token: resetToken
+          });
+        });
+    }
+  );
+};
+export const resetPassword=(req,res)=>{
+  const {token}=req.params;
+  const {newPassword,confirmPassword}=req.body;
+  if(!newPassword||!confirmPassword)
+    return res.status(400).json({ message: 'Please provide all fields' });
+  if(!validatePassword(newPassword))
+    return res.status(400).json({ message: 'Password must be at least 8 characters and include uppercase, lowercase, number, and special character' });
+  if(!validateConfirmPassword(newPassword,confirmPassword))
+  return res.status(400).json({ message: 'Passwords do not match' });
+  // get email from reset token
+  let email;
+  try{
+    const decoded=jwt.verify(token,process.env.ACCESSTOKEN);
+    email=decoded.email;
+  }
+  catch(err){
+     return res.status(401).json({ message: 'Invalid or expired session. Please try again.' });
+  }
+  bcrypt.hash(newPassword,10,(err,hashedPassword)=>{
+    if(err) return res.status(500).json({ message: err.message });
+    updatePassword(email,hashedPassword,(err)=>{
+      if (err) return res.status(500).json({ message: err.message });
+      findUser(email,(err,result)=>{
+        if(err) return res.status(500).json({ message: err.message });
+        createSendToken(result[0],200,res);
+      });
+    });
+  });
+};
+export default {registerUser,login,verifyEmail,forgotPassword,verifyResetOTP,resetPassword};

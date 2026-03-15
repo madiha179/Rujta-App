@@ -6,7 +6,7 @@ export const generateOTP=()=>{
   return Math.floor(1000+Math.random()*9000).toString();
 };
 
-export const saveOTP=(email,name,otp,callback)=>{
+export const saveOTP=(email,name,otp,type = 'sendOTP',callback)=>{
   // delete any old otp for this email
   db.query('DELETE FROM otps WHERE email=? ',[email],(err)=>{
     if(err) return callback(err);
@@ -15,9 +15,13 @@ export const saveOTP=(email,name,otp,callback)=>{
     db.query(sql,[email,otp,expiresAt],async(err,result)=>{
       if(err) return callback(err);
       try{
-        const User={email,name};
-        await new Email(User,otp).sendOTP();
-        callback(null,result);
+        const user = { email, name };
+        const emailInstance = new Email(user, otp);
+        if (type === 'resetPassword')
+          await emailInstance.sendResetPassword();
+        else
+          await emailInstance.sendOTP();
+        callback(null, result);
       }catch(emailErr){
         callback(emailErr);
       }
