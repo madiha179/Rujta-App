@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:Rujta/Screens/Forget_password_screen.dart';
+import 'package:Rujta/Screens/home.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
 
@@ -39,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const HomePage()),
+          MaterialPageRoute(builder: (_) => const ForgetPasswordScreen()),
         );
       }
     });
