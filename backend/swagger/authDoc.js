@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /users/signup:
+ * /api/v1/users/signup:
  *   post:
  *     summary: Register a new customer
  *     tags: [Auth]
@@ -35,7 +35,7 @@
  */
 /**
  * @swagger
- * /users/verifyemail:
+ * /api/v1/users/verifyemail:
  *   post:
  *     summary: Verify email with OTP after signup
  *     tags: [Auth]
@@ -58,7 +58,7 @@
  */
 /**
  * @swagger
- * /users/login:
+ * /api/v1/users/login:
  *   post:
  *     summary: Login for customers and admins
  *     tags: [Auth]
@@ -86,7 +86,7 @@
  */
 /**
  * @swagger
- * /users/forgot-password:
+ * /api/v1/users/forgot-password:
  *   post:
  *     summary: Send OTP to email for password reset
  *     tags: [Auth]
@@ -109,7 +109,7 @@
  */
 /**
  * @swagger
- * /users/verify-reset-otp:
+ * /api/v1/users/verify-reset-otp:
  *   post:
  *     summary: Verify OTP for password reset
  *     tags: [Auth]
@@ -132,7 +132,7 @@
  */
 /**
  * @swagger
- * /users/reset-password/{token}:
+ * /api/v1/users/reset-password/{token}:
  *   post:
  *     summary: Reset password using token from verify-reset-otp
  *     tags: [Auth]
