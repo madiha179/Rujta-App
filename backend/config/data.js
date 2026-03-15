@@ -5,12 +5,13 @@ const host=process.env.HOST;
 const dbPort=process.env.DBPORT;
 const user=process.env.USER;
 const password=process.env.PASSWORD;
-const db=mysql.createConnection({
-  host:host,
-  port:dbPort,
-  user:user,
-  password:password,
-  database: process.env.DATABASE
+const db = mysql.createConnection({
+  host: process.env.HOST,
+  port: process.env.DBPORT,
+  user: process.env.USER,
+  password: process.env.PASSWORD,
+  database: process.env.DATABASE,
+  ssl: { rejectUnauthorized: false }
 });
 db.connect((err)=>{
 if(!err){
