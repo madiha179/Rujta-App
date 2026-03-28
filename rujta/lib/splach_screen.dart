@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:Rujta/Screens/Forget_password_screen.dart';
-import 'package:Rujta/Screens/home.dart';
 import 'package:flutter/material.dart';
-import 'main.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

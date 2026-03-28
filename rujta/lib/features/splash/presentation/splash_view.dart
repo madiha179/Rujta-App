@@ -5,7 +5,7 @@ import 'package:Rujta/features/on_Boarding/presentation/on_boardin_view.dart';
 import 'package:Rujta/core/utils/size_config.dart';
 
 class SplashView extends StatefulWidget {
-  const SplashView({Key? key}) : super(key: key);
+  const SplashView({super.key});
 
   @override
   State<SplashView> createState() => _SplashViewState();

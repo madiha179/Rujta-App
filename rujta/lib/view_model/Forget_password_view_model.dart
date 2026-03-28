@@ -1,6 +1,5 @@
 import 'package:Rujta/core/widgets/email_dialogue.dart';
 import 'package:flutter/material.dart';
-import 'package:Rujta/core/constants.dart';
 
 class ForgetPasswordViewModel {
   final TextEditingController emailController = TextEditingController();
