@@ -4,7 +4,7 @@ import 'package:Rujta/core/constants.dart';
 
 
 class CustomIndicator extends StatelessWidget {
-  const CustomIndicator({Key? key,@required this.dotIndex}) : super(key: key);
+  const CustomIndicator({super.key,@required this.dotIndex});
   final double? dotIndex;
   @override
   Widget build(BuildContext context) {
