@@ -13,6 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   get: ^4.7.3
+  http: ^0.13.6
   
 
 dev_dependencies:
