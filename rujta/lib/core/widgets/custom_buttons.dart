@@ -3,7 +3,7 @@ import 'package:Rujta/core/utils/size_config.dart';
 import 'package:Rujta/core/constants.dart';
 
 class CustomGeneralButton extends StatelessWidget {
-  const CustomGeneralButton({Key? key, this.text}) : super(key: key);
+  const CustomGeneralButton({super.key, this.text});
 
   final String? text;
 

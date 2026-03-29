@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:Rujta/features/on_Boarding/presentation/widgets/custom_page_view.dart';
 
 class OnBoardingViewBody extends StatefulWidget {
-  const OnBoardingViewBody({Key? key}) : super(key: key);
+  const OnBoardingViewBody({super.key});
 
   @override
   _OnBoardingViewBodyState createState() => _OnBoardingViewBodyState();

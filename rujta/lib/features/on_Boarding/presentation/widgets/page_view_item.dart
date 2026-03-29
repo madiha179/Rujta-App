@@ -3,8 +3,7 @@ import 'package:Rujta/core/utils/size_config.dart';
 import 'package:Rujta/core/widgets/space_widget.dart';
 
 class PageViewItem extends StatelessWidget {
-  const PageViewItem({Key? key, this.title, this.subTitle, this.image})
-      : super(key: key);
+  const PageViewItem({super.key, this.title, this.subTitle, this.image});
 
   final String? title;
   final String? subTitle;

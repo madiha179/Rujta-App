@@ -8,7 +8,7 @@ void main() {
 }
 
 class Rujta extends StatelessWidget {
-  const Rujta({Key? key}) : super(key: key);
+  const Rujta({super.key});
 
   @override
   Widget build(BuildContext context) {
