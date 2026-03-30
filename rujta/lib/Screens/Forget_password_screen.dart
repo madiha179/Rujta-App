@@ -40,25 +40,25 @@ class _nameState extends State<ForgetPasswordScreen> {
             )
             ,SizedBox(height: 64,),
             TextField(controller: viewModel.emailController,
-               decoration: InputDecoration(
+                decoration: InputDecoration(
     labelText: "Email",
    // border: OutlineInputBorder(),
   ),
             ),
             SizedBox(height: 42,),
- GestureDetector(
+  GestureDetector(
   onTap: (){
     viewModel.resetPassword(context);
   },
-   child: Container(
+    child: Container(
     
     height: 50,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(10),
       color: kMainColor),
-   child: Center(child: Text('Reset Password',
-   style: TextStyle(color: Colors.white),)),),
- )
+    child: Center(child: Text('Reset Password',
+    style: TextStyle(color: Colors.white),)),),
+  )
        ] ),
       ),
     );
