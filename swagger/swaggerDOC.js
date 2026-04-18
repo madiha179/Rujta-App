@@ -14,8 +14,19 @@ const options = {
       version: '1.0.0',
       description: 'API documentation for Rujta project',
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
   },
-  apis: [path.join(__dirname, 'authDoc.js')],
+  apis: [path.join(__dirname, 'authDoc.js')
+,path.join(__dirname,'adminDoc.js')
+  ],
 };
 
 const swaggerSpec = swaggerJSDoc(options);

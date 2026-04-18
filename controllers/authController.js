@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import { createUser, findUser, verifyUserEmail, updatePassword } from '../model/userModel.js';
 import jwt from 'jsonwebtoken';
+import {promisify} from 'util'
 import { validatePassword, validateConfirmPassword } from '../utills/validators.js';
 import { generateOTP, saveOTP, verifyOTP } from '../utills/otp.js';
 import db from '../config/data.js';
@@ -222,4 +223,40 @@ export const resetPassword = (req, res) => {
     });
   });
 };
-export default {registerUser,login,verifyEmail,forgotPassword,verifyResetOTP,resetPassword};
+export const restrictTO=(...roles)=>{
+ return (req,res,next)=>{
+  if(!roles.includes(req.user.role)){
+    return res.status(403).json({
+      message:"You do not have permission to perform this action "
+    });
+  }
+  next();
+ };
+};
+export const protect=async (req,res,next)=>{
+  let token;
+  if(req.headers.authorization&&req.headers.authorization.startsWith('Bearer'))
+    {
+      token=req.headers.authorization.split(' ')[1];
+  }
+  if(!token){
+    return res.status(401).json({
+      message:"you're not logged in! please login again to get access"
+    });
+  }
+  try{
+  const decoded=await promisify(jwt.verify)(token,process.env.ACCESSTOKEN);
+  db.query('SELECT * FROM users WHERE id=?',[decoded.id],(err,result)=>{
+    if(err||result.length===0){
+      return res.status(401).json({ message: 'User no longer exist' });
+    }
+    req.user = result[0];
+    next();
+  });
+
+  }
+  catch(err){
+    return res.status(401).json({ message: 'Invalid token or expired. Please log in again.' });
+  }
+}
+export default {registerUser,login,verifyEmail,forgotPassword,verifyResetOTP,resetPassword,protect,restrictTO};
