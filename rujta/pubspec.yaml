@@ -1,0 +1,51 @@
+name: Rujta
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.1
+
+dependencies:
+  cupertino_icons: ^1.0.8
+  dots_indicator: ^4.0.1
+  http: ^1.2.0
+  flutter:
+    sdk: flutter
+  get: ^4.7.3
+  provider: ^6.1.5+1
+  http: ^0.13.6
+  
+
+dev_dependencies:
+  flutter_launcher_icons: ^0.14.4
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter
+
+# إعداد أيقونة التطبيق
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "images/Logo.png"
+  app_name: "Rujta"
+  min_sdk_android: 30
+  # إعداد سبلاش سكرين
+  #flutter_native_splash:
+  # color: "#F8F8F8"
+  #image: "images/Logo.png"
+  # android: true
+  #ios: true
+  # image: "images/Logo.png"
+  # color: "#F8F8F8"
+  #icon_background_color: "#F8F8F8"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - images/Logo.png
+    - images/onboarding1.png
+    - images/onboarding2.png
+    - images/onboarding3.png
