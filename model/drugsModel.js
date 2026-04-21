@@ -13,8 +13,15 @@ export const addNewDrug=(name,exp_date,branch_id,price,quantity,callback)=>{
     })
   });
 };
-
-export const getAllDrugs=(callback)=>{
+export const getDrugsCount=(callback)=>{
+  const sql=`SELECT COUNT(*) AS total FROM branch_drugs`;
+  db.query(sql,(err,result)=>{
+    if(err)
+      return callback(err);
+    callback(null,result[0].total);
+  });
+};
+export const getAllDrugs=(offset,callback)=>{
   const sql= `SELECT
 p.name AS pharmacy_name,
 b.id AS branchId,
@@ -30,8 +37,10 @@ branches b ON bd.branch_id=b.id
 JOIN
 drugs d ON bd.drug_id =d.id
 JOIN 
-pharmacies p ON b.pharmacy_id = p.id; `;
-db.query(sql,callback)
+pharmacies p ON b.pharmacy_id = p.id
+LIMIT 10 OFFSET ?
+; `;
+db.query(sql,[offset],callback)
 };
 
 export const updateDrugPriceFromBranch=(branchId,drugId,newPrice,quantity,callback)=>{

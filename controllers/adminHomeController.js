@@ -1,7 +1,18 @@
-import { addNewDrug,getAllDrugs,updateDrugPriceFromBranch,deleteDrugFromBranch,searchDrugDetailed } from "../model/drugsModel.js";
+import { addNewDrug,getAllDrugs,updateDrugPriceFromBranch,deleteDrugFromBranch,searchDrugDetailed,getDrugsCount } from "../model/drugsModel.js";
 import db from "../config/data.js";
 export const getAllDrugsController=(req,res,next)=>{
-  getAllDrugs((err,results)=>{
+  const page=parseInt(req.query.page)||1;
+  if(page<1) page=1;
+  const limit=10;
+  const offset=(page-1)*limit;
+getDrugsCount((err,totalCount)=>{
+  if(err){
+    return res.status(500).json({
+      status:'error',
+      message:err.message
+    });
+  }
+  getAllDrugs(offset,(err,results)=>{
     if(err){
       console.error("Error ",err.message);
       return res.status(500).json({
@@ -9,6 +20,7 @@ export const getAllDrugsController=(req,res,next)=>{
         message:'Server Error'
       });
     }
+    const totalPages=Math.ceil(totalCount/limit);
     if(results.length===0){
       return res.status(404).json({
         status:'success',
@@ -17,12 +29,16 @@ export const getAllDrugsController=(req,res,next)=>{
     }
     res.status(200).json({
       status:'success',
+      currentPage:page,
+      totalPages:totalPages,
+      totalItems:totalCount,
       results:results.length,
       data:{
         drugs:results
       }
     });
   });
+}) 
 };
 export const addNewDrugController=(req,res,next)=>{
   const {name,expDate,price,branchId,quantity}=req.body;
