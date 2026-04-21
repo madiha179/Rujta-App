@@ -1,0 +1,11 @@
+import express from 'express';
+import { restrictTO ,protect} from '../controllers/authController.js';
+import { getAllDrugsController,addNewDrugController,updateDrugController,deleteDrugController,searchDrugController } from '../controllers/adminHomeController.js';
+export const adminHomeRouter=express.Router();
+adminHomeRouter.use(protect)
+adminHomeRouter.use(restrictTO('admin'));
+adminHomeRouter.get('/alldrugs',getAllDrugsController);
+adminHomeRouter.post('/drugs',addNewDrugController);
+adminHomeRouter.patch('/drugs/:branchId/:drugId',updateDrugController);
+adminHomeRouter.delete('/drugs/:branchId/:drugId',deleteDrugController);
+adminHomeRouter.get('/drugs/:key',searchDrugController)

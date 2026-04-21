@@ -1,0 +1,10 @@
+import express from 'express';
+import authController from '../controllers/authController.js';
+const authRouter=express.Router();
+authRouter.post('/signup',authController.registerUser);
+authRouter.post('/login',authController.login);
+authRouter.post('/verifyemail',authController.verifyEmail);
+authRouter.post('/forgot-password',authController.forgotPassword);
+authRouter.post('/verify-reset-otp',authController.verifyResetOTP);
+authRouter.post('/reset-password/:token',authController.resetPassword);
+export default authRouter;
