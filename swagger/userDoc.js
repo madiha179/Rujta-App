@@ -51,6 +51,9 @@
  *                           drug_name:
  *                             type: string
  *                             example: Paracetamol 500mg
+ *                           image_url:
+ *                             type: string
+ *                             example: http://localhost:3000/images/Antinal.jpeg
  *                           price:
  *                             type: string
  *                             example: "25.00"
@@ -150,6 +153,9 @@
  *                           drug_name:
  *                             type: string
  *                             example: Paracetamol 500mg
+ *                           image_url:
+ *                             type: string
+ *                             example: http://localhost:3000/images/Antinal.jpeg
  *                           price:
  *                             type: string
  *                             example: "25.00"

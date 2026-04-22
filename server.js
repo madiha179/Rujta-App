@@ -9,6 +9,7 @@ dotenv.config({path:'config.env'});
 const app=express();
 const port=process.env.PORT||3000;
 app.use(express.json());
+app.use('/images',express.static('view/images'));
 swaggerDOC(app);
 app.use('/api/v1/users',authRout);
 app.use('/api/v1/admin',adminHomeRouter);

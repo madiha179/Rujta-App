@@ -3,6 +3,7 @@ export const findAllDrugsByLocation=(userlang,userlatt,callback)=>{
   const sql=`SELECT 
   d.name AS drug_name,
   p.name AS pharmacy_name,
+  d.imgae_url AS image_url,
   bd.price AS drug_price,
   (ST_Distance_Sphere(
   point(b.longitude, b.latitude),
@@ -23,6 +24,7 @@ export const searchDrugNameByLocation=(word,userlang,userlatt,callback)=>{
  const sql=`
  SELECT d.name AS drug_name,
  bd.price AS drug_price,
+ d.imgae_url AS image_url,
  p.name AS pharmacy_name,
  (ST_Distance_sphere(
  point(b.longitude,b.latitude),
