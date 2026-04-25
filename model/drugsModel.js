@@ -68,3 +68,15 @@ export const searchDrugDetailed=(searchWord,callback)=>{
   `
   db.query(sql,[`%${searchWord}%`],callback);
 };
+export const getTotalStock=(callback)=>{
+  const sql=`SELECT SUM(quantity) AS Total_Stock
+FROM branch_drugs;
+`
+db.query(sql,callback);
+};
+export const getLowStockCount=(callback)=>{
+  const sql=`SELECT COUNT(quantity) AS Low_Stock 
+FROM branch_drugs
+WHERE quantity<20;`
+db.query(sql,callback);
+};

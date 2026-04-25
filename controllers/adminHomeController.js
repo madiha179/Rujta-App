@@ -1,4 +1,4 @@
-import { addNewDrug,getAllDrugs,updateDrugPriceFromBranch,deleteDrugFromBranch,searchDrugDetailed,getDrugsCount } from "../model/drugsModel.js";
+import { addNewDrug,getAllDrugs,updateDrugPriceFromBranch,deleteDrugFromBranch,searchDrugDetailed,getDrugsCount,getTotalStock,getLowStockCount } from "../model/drugsModel.js";
 import db from "../config/data.js";
 export const getAllDrugsController=(req,res,next)=>{
   const page=parseInt(req.query.page)||1;
@@ -89,6 +89,22 @@ export const addNewDrugController=(req,res,next)=>{
 export const searchDrugController=(req,res,next)=>{
   const key=req.params.key;
   searchDrugDetailed(key,(err,result)=>{
+    if(err) return res.status(500).json({message:err.message});
+    res.status(200).json({
+      data:result
+    });
+  });
+}
+export const getTotalStockController=(req,res,next)=>{
+getTotalStock((err,result)=>{
+  if(err) return res.status(500).json({message:err.message});
+  res.status(200).json({
+    data:result
+  });
+});
+}
+export const getLowStockController=(req,res,next)=>{
+  getLowStockCount((err,result)=>{
     if(err) return res.status(500).json({message:err.message});
     res.status(200).json({
       data:result
