@@ -1,6 +1,5 @@
 import 'package:Rujta/core/widgets/email_dialogue.dart';
 import 'package:flutter/material.dart';
-import 'package:Rujta/core/constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -24,7 +23,7 @@ class ForgetPasswordViewModel {
     } else {
 try{
 final url = Uri.parse(
-        'https://respectable-adelind-rujta-app-580bd658.koyeb.app/api/v1/users/forgot-password',
+        'https://rujta-app-production.up.railway.app/api/v1/users/forgot-password',
       );
       final response = await http.post(
         url,
