@@ -42,11 +42,19 @@ getDrugsCount((err,totalCount)=>{
 };
 export const addNewDrugController=(req,res,next)=>{
   const {name,expDate,price,branchId,quantity}=req.body;
-  addNewDrug(name,expDate,branchId,price,quantity,(err,results)=>{
+const image_name = req.file ? req.file.filename : null;
+if (!name || !image_name) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Missing drug name or image'
+    });
+  }
+  addNewDrug(name,expDate,image_name,branchId,price,quantity,(err,results)=>{
     if(err) return res.status(500).json({message:err.message});
     res.status(201).json({
       status:'success',
-      message:'Drug added successfully'
+      message:'Drug added successfully',
+      fileName:image_name
     })
   })};
   export const updateDrugController=(req,res,next)=>{

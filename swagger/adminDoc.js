@@ -13,6 +13,12 @@
  *     tags: [Admin Home]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           example: 1
  *     responses:
  *       200:
  *         description: List of drugs
@@ -31,6 +37,7 @@
  *                     branch_address: Nasr City
  *                     drug_name: Zyrtec 10mg
  *                     drugId: 5
+ *                     image_url: "photo.jpeg"
  *                     price: "60.00"
  *                     exp_date: 2026-09-04T21:00:00.000Z
  */
@@ -43,14 +50,42 @@
  *     tags: [Admin Home]
  *     security:
  *       - bearerAuth: []
+ *     description: |
+ *       Example request:
+ *       name: LAMIFEN 250 MG
+ *       branchId: 1
+ *       price: 112
+ *       quantity: 70
+ *       expDate: 2026-08-01
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: LAMIFEN 250 MG
+ *               image_name:
+ *                 type: string
+ *                 format: binary
+ *               branchId:
+ *                 type: integer
+ *                 example: 1
+ *               price:
+ *                 type: number
+ *                 example: 112
+ *               quantity:
+ *                 type: integer
+ *                 example: 70
+ *               expDate:
+ *                 type: string
+ *                 format: date
+ *                 example: 2026-08-01
  *     responses:
  *       201:
  *         description: Drug added successfully
- *         content:
- *           application/json:
- *             example:
- *               status: success
- *               message: Drug added successfully
  */
 
 /**
@@ -61,6 +96,30 @@
  *     tags: [Admin Home]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: branchId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: drugId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               newPrice:
+ *                 type: number
+ *                 example: 120
+ *               quantity:
+ *                 type: integer
+ *                 example: 50
  *     responses:
  *       200:
  *         description: Updated successfully
@@ -80,6 +139,17 @@
  *     tags: [Admin Home]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: branchId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: drugId
+ *         required: true
+ *         schema:
+ *           type: integer
  *     responses:
  *       204:
  *         description: Deleted successfully
@@ -93,6 +163,13 @@
  *     tags: [Admin Home]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: key
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: zyrtec
  *     responses:
  *       200:
  *         description: Search results
@@ -130,7 +207,7 @@
  * @swagger
  * /api/v1/admin/drugs/low:
  *   get:
- *     summary: Get low stock count 
+ *     summary: Get low stock count
  *     tags: [Admin Home]
  *     security:
  *       - bearerAuth: []

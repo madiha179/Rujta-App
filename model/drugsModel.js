@@ -1,8 +1,8 @@
 import db from "../config/data.js";
 
-export const addNewDrug=(name,exp_date,branch_id,price,quantity,callback)=>{
-  const sqlDrug="INSERT INTO drugs(name,exp_date) VALUES(?,?)";
-  db.query(sqlDrug,[name,exp_date],(err,result)=>{
+export const addNewDrug=(name,exp_date,imgae_url,branch_id,price,quantity,callback)=>{
+  const sqlDrug="INSERT INTO drugs(name,exp_date,imgae_url) VALUES(?,?,?)";
+  db.query(sqlDrug,[name,exp_date,imgae_url],(err,result)=>{
     if(err) return callback(err);
     const newDrugId=result.insertId;
     const sqlPrice=`INSERT INTO branch_drugs (branch_id, drug_id, price, quantity)

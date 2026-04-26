@@ -11,6 +11,7 @@ const app=express();
 const port=process.env.PORT||3000;
 app.use(express.json());
 app.use('/images',express.static('view/images'));
+app.use(express.urlencoded({ extended: true }));
 swaggerDOC(app);
 app.use('/api/v1/users',authRout);
 app.use('/api/v1/admin',adminHomeRouter);
