@@ -1,9 +1,9 @@
+import 'package:Rujta/Screens/ResetPasswordScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:Rujta/core/constants.dart';
 import 'package:flutter/services.dart';
-import '../view_model/otp_view_model.dart';
+import '../view_model/OTP_view_model.dart';
 import 'package:provider/provider.dart';
-import 'package:Rujta/screens/ResetPasswordScreen.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
@@ -82,16 +82,18 @@ class _OtpScreenState extends State<OtpScreen> {
               child: ElevatedButton(
                 onPressed: vm.isLoading ? null : () async {
                   List<String> code = _controllers.map((e) => e.text).toList();
-                  bool success = await vm.verifyOtp(code);
-                  if (success) {
+                  String? token = await vm.verifyOtp(code);
+                  if (token != null && token.isNotEmpty) {
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const ResetPasswordScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => ResetPasswordScreen(token: token),
+                        ),
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text("Invalid OTP code, please try again"),
+                          content: Text("Invalid OTP code or expired token, please try again"),
                           backgroundColor: Colors.red,
                         ),
                       );

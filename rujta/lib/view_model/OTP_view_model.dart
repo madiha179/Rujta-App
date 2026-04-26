@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class OtpViewModel extends ChangeNotifier {
 
@@ -37,23 +39,52 @@ class OtpViewModel extends ChangeNotifier {
     });
   }
 
-  Future<bool> verifyOtp(List<String> codeList) async {
+  Future<String?> verifyOtp(List<String> codeList) async {
     _otpCode = codeList.join(); 
 
-    if (_otpCode.length < 4) return false;
+    if (_otpCode.length < 4) return null;
 
     _isLoading = true;
     notifyListeners();
 
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      final url = Uri.parse(
+        'https://rujta-app-production.up.railway.app/api/v1/users/verify-reset-otp',
+      );
 
-    _isLoading = false;
-    notifyListeners();
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "otp": _otpCode,
+        }),
+      );
 
-    if (_otpCode == "1234") { // مثال لحد ما نعمل كونكت بالداتا بيز 
-      return true; 
-    } else {
-      return false; 
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        final dynamic nestedData = data["data"];
+
+        final String? token =
+            data["token"]?.toString() ??
+            data["resetToken"]?.toString() ??
+            data["reset_token"]?.toString() ??
+            (nestedData is Map<String, dynamic>
+                ? nestedData["token"]?.toString() ??
+                    nestedData["resetToken"]?.toString() ??
+                    nestedData["reset_token"]?.toString()
+                : null);
+
+        return token;
+      }
+
+      return null;
+    } catch (_) {
+      return null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 
