@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:Rujta/view_model/Login_screen_view_model.dart';
-
+import 'Forget_password_screen.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -124,7 +124,11 @@ class _LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute<void>(
+                     builder: (context) => const ForgetPasswordScreen(),
+                     ),);
+                  },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                     minimumSize: Size.zero,
