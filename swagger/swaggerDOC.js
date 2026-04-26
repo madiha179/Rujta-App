@@ -26,7 +26,8 @@ const options = {
   },
   apis: [path.join(__dirname, 'authDoc.js')
 ,path.join(__dirname,'adminDoc.js'),
-path.join(__dirname,'userDoc.js')
+path.join(__dirname,'userDoc.js'),
+path.join(__dirname,'userProfileDoc.js')
   ],
 };
 

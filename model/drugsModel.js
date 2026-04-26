@@ -27,6 +27,7 @@ p.name AS pharmacy_name,
 b.id AS branchId,
 b.address AS branch_address,
 d.name AS drug_name,
+d.imgae_url AS image_url,
 d.id AS drugId,
 bd.price AS price,
 d.exp_date AS exp_date
@@ -59,7 +60,7 @@ export const deleteDrugFromBranch=(branchId, drugId, callback) => {
 };
 
 export const searchDrugDetailed=(searchWord,callback)=>{
-  const sql=`SELECT p.name AS pharmacy_name, b.address AS branch_address, d.name AS drug_name , bd.price ,d.id AS drugId ,b.id AS branchId
+  const sql=`SELECT p.name AS pharmacy_name, b.address AS branch_address, d.name AS drug_name ,d.imgae_url AS image_url, bd.price ,d.id AS drugId ,b.id AS branchId
   FROM branch_drugs bd
   JOIN drugs d ON bd.drug_id=d.id
   JOIN branches b ON bd.branch_id=b.id
