@@ -13,11 +13,17 @@ export const getAllDrugsByLocationController=(req,res,next)=>{
     if(err)
       return res.status(500).json({
     message:err.message});
+    const protocol=req.protocol;
+    const host=req.get('host');
+    const updatedResult=result.map(drug=>({
+      ...drug,
+      image_url:drug.image_url ? `${protocol}://${host}/${drug.image_url}`:null
+    }))
     res.status(200).json({
       status:'success',
       results:result.length,
       data:{
-        data:result
+        data:updatedResult
       }
     });
   });
@@ -43,11 +49,17 @@ export const searchDrugByLocationController=(req,res,next)=>{
           message:'This drug is out of stock'
         });
       }
+      const protocol=req.protocol;
+    const host=req.get('host');
+    const updatedResult=result.map(drug=>({
+      ...drug,
+      image_url:drug.image_url ? `${protocol}://${host}/${drug.image_url}`:null
+    }))
       res.status(200).json({
         status:'success',
         result:result.length,
         data:{
-          data:result
+          data:updatedResult
         }
       });
   });

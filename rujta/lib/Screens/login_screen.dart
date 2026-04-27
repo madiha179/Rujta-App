@@ -1,3 +1,4 @@
+import 'package:Rujta/Screens/Forget_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:Rujta/view_model/Login_screen_view_model.dart';
 
@@ -124,7 +125,12 @@ class _LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(
+                      context,
+                      '/ForgetPasswordScreen' ,
+                    );
+                  },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                     minimumSize: Size.zero,
@@ -192,10 +198,11 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
   @override
-void dispose() {
-  viewModel.emailController.dispose();
-  viewModel.passController.dispose();
-  super.dispose();
-}
+  void dispose() {
+    viewModel.emailController.dispose();
+    viewModel.passController.dispose();
+    super.dispose();
+  }
 }

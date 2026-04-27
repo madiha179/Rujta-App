@@ -1,0 +1,10 @@
+import express from 'express';
+import { getUserDataController,updatePasswordController,updateUserNameController,updatePhoneController ,getAdminIdController} from '../controllers/userprofileController.js'; 
+import { protect,restrictTO } from '../controllers/authController.js';
+export const userProfileRouter=express.Router();
+userProfileRouter.use(protect);
+userProfileRouter.get('/userprofile',getUserDataController);
+userProfileRouter.patch('/userprofile/updates/name',updateUserNameController);
+userProfileRouter.patch('/userprofile/updates/phone',updatePhoneController);
+userProfileRouter.patch('/userprofile/updates/password',updatePasswordController);
+userProfileRouter.get('/userprofile/admin',restrictTO('admin'),getAdminIdController);

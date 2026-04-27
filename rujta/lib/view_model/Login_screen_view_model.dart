@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginScreenViewModel {
+  final _storage = const FlutterSecureStorage();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
 
@@ -32,7 +34,9 @@ class LoginScreenViewModel {
       );
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        _showMessage(context, "Login success");
+        String token = data["token"] ?? data["data"]["token"];
+        await _storage.write(key: 'auth_token', value: token);
+        Navigator.pushReplacementNamed(context, '/UserProfileScreen');
       } else {
         _showMessage(context, data["message"]);
       }

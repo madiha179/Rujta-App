@@ -1,4 +1,4 @@
-import { addNewDrug,getAllDrugs,updateDrugPriceFromBranch,deleteDrugFromBranch,searchDrugDetailed,getDrugsCount } from "../model/drugsModel.js";
+import { addNewDrug,getAllDrugs,updateDrugPriceFromBranch,deleteDrugFromBranch,searchDrugDetailed,getDrugsCount,getTotalStock,getLowStockCount } from "../model/drugsModel.js";
 import db from "../config/data.js";
 export const getAllDrugsController=(req,res,next)=>{
   const page=parseInt(req.query.page)||1;
@@ -42,11 +42,19 @@ getDrugsCount((err,totalCount)=>{
 };
 export const addNewDrugController=(req,res,next)=>{
   const {name,expDate,price,branchId,quantity}=req.body;
-  addNewDrug(name,expDate,branchId,price,quantity,(err,results)=>{
+const image_name = req.file ? req.file.filename : null;
+if (!name || !image_name) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Missing drug name or image'
+    });
+  }
+  addNewDrug(name,expDate,image_name,branchId,price,quantity,(err,results)=>{
     if(err) return res.status(500).json({message:err.message});
     res.status(201).json({
       status:'success',
-      message:'Drug added successfully'
+      message:'Drug added successfully',
+      fileName:image_name
     })
   })};
   export const updateDrugController=(req,res,next)=>{
@@ -89,6 +97,22 @@ export const addNewDrugController=(req,res,next)=>{
 export const searchDrugController=(req,res,next)=>{
   const key=req.params.key;
   searchDrugDetailed(key,(err,result)=>{
+    if(err) return res.status(500).json({message:err.message});
+    res.status(200).json({
+      data:result
+    });
+  });
+}
+export const getTotalStockController=(req,res,next)=>{
+getTotalStock((err,result)=>{
+  if(err) return res.status(500).json({message:err.message});
+  res.status(200).json({
+    data:result
+  });
+});
+}
+export const getLowStockController=(req,res,next)=>{
+  getLowStockCount((err,result)=>{
     if(err) return res.status(500).json({message:err.message});
     res.status(200).json({
       data:result
