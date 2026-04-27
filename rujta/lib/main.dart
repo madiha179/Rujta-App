@@ -7,6 +7,7 @@ import 'features/splash/presentation/splash_view.dart';
 import 'package:Rujta/Screens/login_screen.dart';
 import 'package:Rujta/Screens/user_profile_screen.dart';
 import 'package:Rujta/Screens/Forget_password_screen.dart';
+
 import 'package:get/get.dart';
 
 void main() {
@@ -26,6 +27,7 @@ class Rujta extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       //  debugShowCheckedModeBanner: false,
+    //  debugShowCheckedModeBanner: false, 
       title: 'Rujta App',
       home: LoginScreen(),
       routes: {
