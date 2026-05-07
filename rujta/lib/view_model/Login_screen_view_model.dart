@@ -32,15 +32,18 @@ class LoginScreenViewModel {
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email, "password": password}),
       );
+      if (!context.mounted) return;
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) {
         String token = data["token"] ?? data["data"]["token"];
         await _storage.write(key: 'auth_token', value: token);
-        Navigator.pushReplacementNamed(context, '/UserProfileScreen');
+        if (!context.mounted) return;
+        Navigator.pushReplacementNamed(context, '/Home');
       } else {
-        _showMessage(context, data["message"]);
+        _showMessage(context, data["message"]?.toString() ?? "Login failed");
       }
     } catch (err) {
+      if (!context.mounted) return;
       _showMessage(context, "Something went wrong");
       print(err);
     }
@@ -51,20 +54,25 @@ class LoginScreenViewModel {
     String pass = passController.text.trim();
     if (email.isEmpty) {
       _showMessage(context, "Please enter your email");
+      return;
     }
     if (!isValidEmail(email)) {
       _showMessage(context, "Please enter vaild email");
+      return;
     }
     if (pass.isEmpty) {
       _showMessage(context, "Please enter your password");
+      return;
     }
     if (!isValidPass(pass)) {
       _showMessage(context, "Please enter vaild password");
+      return;
     }
     await loginApi(context, email, pass);
   }
 
   void _showMessage(BuildContext context, String message) {
+    if (!context.mounted) return;
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));

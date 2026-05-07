@@ -11,9 +11,26 @@ class ForgetPasswordScreen extends StatefulWidget {
 
 class _nameState extends State<ForgetPasswordScreen> {
   final ForgetPasswordViewModel viewModel=ForgetPasswordViewModel();
+
+  void _goBackToLogin(BuildContext context) {
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+      return;
+    }
+    Navigator.of(context).pushReplacementNamed('/login');
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => _goBackToLogin(context),
+        ),
+      ),
       body: Padding(
         padding: EdgeInsets.only(top:64,left: 20,right: 20 ),
         child: Column(
