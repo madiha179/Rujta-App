@@ -157,18 +157,26 @@ class _MyWidgetState extends State<UserProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 2,
+        currentIndex: 1,
         selectedItemColor: const Color(0xFF4CAF50),
         unselectedItemColor: Colors.grey,
         backgroundColor: Colors.white,
         onTap: (index) {
-          if (index == 0) Navigator.pushNamed(context, '/Home');
-          if (index == 1) Navigator.pushNamed(context, '/Drugstore');
+          if (index == 0) {
+            Navigator.pushReplacementNamed(context, '/Home');
+          }
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.inventory_2_outlined), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.receipt_long_outlined), label: 'Drugstore'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
+            label: 'Profile',
+          ),
         ],
       ),
       appBar: AppBar(
