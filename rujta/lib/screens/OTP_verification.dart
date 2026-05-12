@@ -6,7 +6,10 @@ import '../view_model/OTP_view_model.dart';
 import 'package:provider/provider.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key});
+  const OtpScreen({super.key, this.email});
+
+  /// Email the OTP was sent to (from forgot-password flow).
+  final String? email;
 
   @override
   _OtpScreenState createState() => _OtpScreenState();
@@ -53,10 +56,12 @@ class _OtpScreenState extends State<OtpScreen> {
             const Text("OTP Verification", 
                 style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black)),
             const SizedBox(height: 10),
-            const Text(
-              "Please check your email www.uihut@example.com to see the verification code",
+            Text(
+              widget.email != null && widget.email!.isNotEmpty
+                  ? 'Please check your email ${widget.email} for the verification code.'
+                  : 'Please check your email for the verification code.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: subtitleColor, fontSize: 14),
+              style: const TextStyle(color: subtitleColor, fontSize: 14),
             ),
             const SizedBox(height: 40),
             const Align(
