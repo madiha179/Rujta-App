@@ -35,10 +35,18 @@ class LoginScreenViewModel {
       if (!context.mounted) return;
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) {
+        //store token
         String token = data["token"] ?? data["data"]["token"];
         await _storage.write(key: 'auth_token', value: token);
+        //store role for nav
+        String role = data["role"] ?? data["data"]["user"]["role"] ;
+        await _storage.write(key: 'user_role', value: role);
         if (!context.mounted) return;
-        Navigator.pushReplacementNamed(context, '/Home');
+        if (role == "admin") {
+          Navigator.pushReplacementNamed(context, '/');
+        } else {
+          Navigator.pushReplacementNamed(context, '/Home');
+        }
       } else {
         _showMessage(context, data["message"]?.toString() ?? "Login failed");
       }

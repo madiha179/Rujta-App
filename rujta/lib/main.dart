@@ -5,7 +5,7 @@ import 'package:Rujta/Screens/login_screen.dart';
 import 'package:Rujta/Screens/user_profile_screen.dart';
 import 'package:Rujta/Screens/Forget_password_screen.dart';
 import 'package:Rujta/Screens/home.dart';
-
+import 'package:Rujta/features/splash/presentation/splash_view.dart';
 import 'package:get/get.dart';
 
 void main() {
@@ -27,7 +27,7 @@ class Rujta extends StatelessWidget {
       //  debugShowCheckedModeBanner: false,
     //  debugShowCheckedModeBanner: false, 
       title: 'Rujta App',
-      home: LoginScreen(),
+      home:const SplashView(),
       routes: {
         '/login': (context) => LoginScreen(),
         '/Home': (context) => const HomePage(),

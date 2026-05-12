@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:Rujta/features/on_Boarding/presentation/on_boardin_view.dart';
 import 'package:Rujta/core/utils/size_config.dart';
+import 'package:Rujta/Screens/home.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -18,6 +20,7 @@ class _SplashViewState extends State<SplashView> {
 
   Timer? _typingTimer;
   Timer? _navigationTimer;
+  final _storage = const FlutterSecureStorage();
 
   @override
   void initState() {
@@ -44,11 +47,33 @@ class _SplashViewState extends State<SplashView> {
   }
 
   void _startTimer() {
-    _navigationTimer = Timer(const Duration(milliseconds: 4800), () {
+    _navigationTimer = Timer(const Duration(milliseconds: 4800), () async {
       if (!mounted) return;
-      // الانتقال مباشرة إلى OnBoardingView باستخدام GetX
-      Get.off(() => const OnBoardingView(), transition: Transition.fade);
+      await _checkLoginStatus();
     });
+  }
+
+  Future<void> _checkLoginStatus() async {
+    try {
+      final token = await _storage.read(key: 'auth_token');
+      final role = await _storage.read(key: 'user_role');
+
+      if (!mounted) return;
+
+      if (token != null && token.isNotEmpty) {
+        if (role == "customer") {
+          Get.off(() => HomePage(), transition: Transition.fade);
+        } else {
+          Get.off(() => OnBoardinViewBody(), transition: Transition.fade);
+        }
+      } else {
+        Get.off(() => OnBoardinViewBody(), transition: Transition.fade);
+      }
+    } catch (e) {
+      if (mounted) {
+        Get.off(() =>OnBoardinViewBody(), transition: Transition.fade);
+      }
+    }
   }
 
   @override
@@ -67,11 +92,7 @@ class _SplashViewState extends State<SplashView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              "images/Logo.png",
-              width: 80,
-              height: 80,
-            ),
+            Image.asset("images/Logo.png", width: 80, height: 80),
             const SizedBox(height: 10),
             Stack(
               children: [

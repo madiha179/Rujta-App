@@ -14,10 +14,10 @@ class DrugStoreHomeViewModel {
     final lng = longitude.toString();
     final lat = latitude.toString();
     if (searchKey == null || searchKey.trim().isEmpty) {
-      return Uri.parse('$_apiRoot/user/drugsbylocation/$lng/$lat');
+      return Uri.parse('$_apiRoot/users/drugsbylocation/$lng/$lat');
     }
     final key = Uri.encodeComponent(searchKey.trim());
-    return Uri.parse('$_apiRoot/user/drugsbylocation/$lng/$lat/$key');
+    return Uri.parse('$_apiRoot/users/drugsbylocation/$lng/$lat/$key');
   }
 
   Future<Position?> getCurrentPosition() async {
