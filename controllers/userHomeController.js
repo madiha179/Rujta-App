@@ -15,16 +15,16 @@ export const getAllDrugsByLocationController = (req, res, next) => {
     if (err)
       return res.status(500).json({ message: err.message });
 
-    const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+    //const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
 
     const updatedResult = result.map(drug => {
       const safeImagePath = drug.image_url ? drug.image_url.replace(/ /g, '%20') : null;
       return {
-        id: drug.drug_id || drug.drug_name,
+        id:  drug.drug_name,
         name: drug.drug_name,
         price: drug.drug_price,
         locationLabel: drug.pharmacy_name,
-        image_url: safeImagePath ? `${baseUrl}/${safeImagePath}` : null
+         image_url:  drug.image_url || null
       };
     });
 
@@ -59,15 +59,14 @@ export const searchDrugByLocationController = (req, res, next) => {
       });
     }
 
-    const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+   // const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
 
     const updatedResult = result.map(drug => ({
-      id: drug.drug_id || drug.drug_name,
+      id: drug.drug_name,
       name: drug.drug_name,
       price: drug.drug_price,
       locationLabel: drug.pharmacy_name,
-      image_url: drug.image_url ? `${baseUrl}/${drug.image_url}` : null
-    }));
+       image_url:  drug.image_url || null    }));
 
     return res.status(200).json({
       status: 'success',
