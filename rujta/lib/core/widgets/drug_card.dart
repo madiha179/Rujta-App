@@ -40,13 +40,15 @@ class DrugCard extends StatelessWidget {
             border: Border.all(color: const Color(0xFFE8E8E8)),
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ClipRRect(
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(13)),
+                // Slightly wider than tall → shorter card than 1:1, still readable.
                 child: AspectRatio(
-                  aspectRatio: 1,
+                  aspectRatio: 1.12,
                   child: drug.imageUrl.isNotEmpty
                       ? Image.network(
                           drug.imageUrl,
@@ -58,8 +60,9 @@ class DrugCard extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -67,23 +70,23 @@ class DrugCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        fontSize: 13,
+                        fontSize: 12,
                         fontWeight: FontWeight.w600,
                         color: Colors.black87,
-                        height: 1.25,
+                        height: 1.2,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Text(
                       _priceLabel(drug.price),
                       style: const TextStyle(
-                        fontSize: 14,
+                        fontSize: 13,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
                     ),
                     if (showDiscountRow) ...[
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 2),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -164,7 +167,7 @@ class DrugCard extends StatelessWidget {
       child: Center(
         child: Icon(
           Icons.medication_outlined,
-          size: 40,
+          size: 36,
           color: kMainColor.withOpacity(0.85),
         ),
       ),
