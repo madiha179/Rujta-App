@@ -252,18 +252,24 @@ class _HomePageState extends State<HomePage> {
                                       16,
                                       0,
                                       16,
-                                      24,
+                                      12,
                                     ),
                                     gridDelegate:
                                         const SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 2,
-                                      mainAxisSpacing: 12,
+                                      mainAxisSpacing: 6,
                                       crossAxisSpacing: 12,
-                                      childAspectRatio: 0.72,
+                                      // Match ~intrinsic DrugCard height (image + text block).
+                                      childAspectRatio: 0.62,
                                     ),
                                     itemCount: _drugs.length,
                                     itemBuilder: (context, i) {
-                                      return DrugCard(drug: _drugs[i]);
+                                      // Loose max height so the card only uses intrinsic
+                                      // height — avoids empty strip below the last row.
+                                      return Align(
+                                        alignment: Alignment.topCenter,
+                                        child: DrugCard(drug: _drugs[i]),
+                                      );
                                     },
                                   ),
                           ),
