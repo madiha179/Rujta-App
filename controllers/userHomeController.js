@@ -13,26 +13,23 @@ export const getAllDrugsByLocationController=(req,res,next)=>{
     if(err)
       return res.status(500).json({
     message:err.message});
-    const protocol=req.protocol;
-    const host=req.get('host');
-    const updatedResult = result.map(drug => ({
-  id: drug.drug_id || drug.drug_name, 
-  name: drug.drug_name,
-  price: drug.drug_price,
-  locationLabel: drug.pharmacy_name, 
-  image_url: drug.image_url ? `${protocol}://${host}/${drug.image_url}` : null
-}));
-    
-    res.status(200).json({
-      status:'success',
-      results:result.length,
-      data:{
-        result:updatedResult
-      }
-    });
-  });
-};
+    //const protocol=req.protocol;
+    //const host=req.get('host');
+   const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
 
+const updatedResult = result.map(drug => {
+    const safeImagePath = drug.image_url ? drug.image_url.replace(/ /g, '%20') : null;
+    
+    return {
+        id: drug.drug_id || drug.drug_name, 
+        name: drug.drug_name,
+        price: drug.drug_price,
+        locationLabel: drug.pharmacy_name, 
+        image_url: safeImagePath ? `${baseUrl}/${safeImagePath}` : null
+    };
+});
+  });
+}
 export const searchDrugByLocationController=(req,res,next)=>{
   const userLat=parseFloat(req.params.lat);
   const userLang=parseFloat(req.params.lng);
