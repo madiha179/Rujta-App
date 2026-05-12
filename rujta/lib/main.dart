@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:Rujta/view_model/otp_view_model.dart';
 import 'package:Rujta/Screens/login_screen.dart';
 import 'package:Rujta/Screens/user_profile_screen.dart';
 import 'package:Rujta/Screens/Forget_password_screen.dart';
@@ -9,12 +7,7 @@ import 'package:Rujta/features/splash/presentation/splash_view.dart';
 import 'package:get/get.dart';
 
 void main() {
-  runApp(
-    MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => OtpViewModel())],
-      child: const Rujta(),
-    ),
-  );
+  runApp(const Rujta());
 }
 
 class Rujta extends StatelessWidget {
