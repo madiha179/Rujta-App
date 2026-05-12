@@ -15,15 +15,19 @@ export const getAllDrugsByLocationController=(req,res,next)=>{
     message:err.message});
     const protocol=req.protocol;
     const host=req.get('host');
-    const updatedResult=result.map(drug=>({
-      ...drug,
-      image_url:drug.image_url ? `${protocol}://${host}/${drug.image_url}`:null
-    }))
+    const updatedResult = result.map(drug => ({
+  id: drug.drug_id || drug.drug_name, 
+  name: drug.drug_name,
+  price: drug.drug_price,
+  locationLabel: drug.pharmacy_name, 
+  image_url: drug.image_url ? `${protocol}://${host}/${drug.image_url}` : null
+}));
+    
     res.status(200).json({
       status:'success',
       results:result.length,
       data:{
-        data:updatedResult
+        result:updatedResult
       }
     });
   });
@@ -51,15 +55,18 @@ export const searchDrugByLocationController=(req,res,next)=>{
       }
       const protocol=req.protocol;
     const host=req.get('host');
-    const updatedResult=result.map(drug=>({
-      ...drug,
-      image_url:drug.image_url ? `${protocol}://${host}/${drug.image_url}`:null
-    }))
+    const updatedResult = result.map(drug => ({
+  id: drug.drug_id || drug.drug_name, 
+  name: drug.drug_name,
+  price: drug.drug_price, 
+  locationLabel: drug.pharmacy_name, 
+  image_url: drug.image_url ? `${protocol}://${host}/${drug.image_url}` : null
+}));
       res.status(200).json({
         status:'success',
         result:result.length,
         data:{
-          data:updatedResult
+          result:updatedResult
         }
       });
   });
