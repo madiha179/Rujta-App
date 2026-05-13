@@ -63,7 +63,7 @@ class ResetPasswordViewModel extends ChangeNotifier {
         },
         body: jsonEncode({
           "newPassword": newPassword,
-          "confirmNewPassword": confirmPassword,
+          "confirmPassword": confirmPassword,
         }),
       );
 
