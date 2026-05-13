@@ -174,8 +174,7 @@ class CartController extends ChangeNotifier {
           key: _cachedBranchKey,
           value: branchIdInt.toString(),
         );
-        _upsertLocal(drug, quantity);
-        notifyListeners();
+         await refreshFromServer();
         return null;
       }
 

@@ -44,7 +44,11 @@ class _CartScreenState extends State<CartScreen> {
                 padding: const EdgeInsets.all(32),
                 children: [
                   const SizedBox(height: 80),
-                  Icon(Icons.shopping_cart_outlined, size: 72, color: Colors.grey.shade400),
+                  Icon(
+                    Icons.shopping_cart_outlined,
+                    size: 72,
+                    color: Colors.grey.shade400,
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     'Your cart is empty',
@@ -65,7 +69,10 @@ class _CartScreenState extends State<CartScreen> {
                   Center(
                     child: Text(
                       'Pull down to refresh',
-                      style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
+                      style: TextStyle(
+                        color: Colors.grey.shade500,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ],
@@ -78,66 +85,73 @@ class _CartScreenState extends State<CartScreen> {
                 SliverPadding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                   sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, i) {
-                        final line = cart.lines[i];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: Material(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              leading: ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: SizedBox(
-                                  width: 56,
-                                  height: 56,
-                                  child: line.imageUrl.isNotEmpty
-                                      ? Image.network(
-                                          line.imageUrl,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (_, __, ___) =>
-                                              Icon(Icons.medication_outlined,
-                                                  color: kMainColor),
-                                        )
-                                      : Icon(Icons.medication_outlined,
-                                          color: kMainColor),
-                                ),
-                              ),
-                              title: Text(
-                                line.name,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              subtitle: Padding(
-                                padding: const EdgeInsets.only(top: 4),
-                                child: Text(
-                                  '${line.unitPrice.toStringAsFixed(0)} EGP × ${line.quantity}',
-                                  style: TextStyle(
-                                    color: Colors.grey.shade700,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              ),
-                              trailing: IconButton(
-                                icon: const Icon(Icons.delete_outline,
-                                    color: Color(0xFFE53935)),
-                                onPressed: () => cart.removeLine(line.drugId),
+                    delegate: SliverChildBuilderDelegate((context, i) {
+                      final line = cart.lines[i];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Material(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: SizedBox(
+                                width: 56,
+                                height: 56,
+                                child: line.imageUrl.isNotEmpty
+                                    ? Image.network(
+                                        line.imageUrl,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (_, __, ___) => Icon(
+                                          Icons.medication_outlined,
+                                          color: kMainColor,
+                                        ),
+                                      )
+                                    : Icon(
+                                        Icons.medication_outlined,
+                                        color: kMainColor,
+                                      ),
                               ),
                             ),
+                            title: Text(
+                              line.name,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                              ),
+                            ),
+                            subtitle: Padding(
+                              padding: const EdgeInsets.only(top: 4),
+                              child: Text(
+                                '${line.unitPrice.toStringAsFixed(0)} EGP × ${line.quantity}',
+                                style: TextStyle(
+                                  color: Colors.grey.shade700,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                            trailing: IconButton(
+                              icon: const Icon(
+                                Icons.delete_outline,
+                                color: Color(0xFFE53935),
+                              ),
+                              onPressed: () {
+                                final id = line.cartId;
+                                if (id != null) {
+                                  cart.removeLine(id);
+                                }
+                              },
+                            ),
                           ),
-                        );
-                      },
-                      childCount: cart.lines.length,
-                    ),
+                        ),
+                      );
+                    }, childCount: cart.lines.length),
                   ),
                 ),
                 SliverToBoxAdapter(
