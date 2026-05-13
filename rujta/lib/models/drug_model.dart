@@ -187,6 +187,7 @@ class DrugModel {
 
     final locationLabel =
         _firstNonEmptyString([
+           d['locationLabel'],
               d['location'],
               d['city'],
               d['pharmacy_name'],
