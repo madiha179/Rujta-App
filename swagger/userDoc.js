@@ -7,7 +7,7 @@
 
 /**
  * @swagger
- * /api/v1/user/drugsbylocation/{lng}/{lat}:
+ * /api/v1/users/drugsbylocation/{lng}/{lat}:
  *   get:
  *     summary: Get all drugs near a location
  *     tags: [User Home Screen APIs]
@@ -103,7 +103,7 @@
 
 /**
  * @swagger
- * /api/v1/user/drugsbylocation/{lng}/{lat}/{key}:
+ * /api/v1/users/drugsbylocation/{lng}/{lat}/{key}:
  *   get:
  *     summary: Search drugs by name near a location
  *     tags: [User Home Screen APIs]

@@ -7,7 +7,7 @@
 
 /**
  * @swagger
- * /api/v1/user/userprofile:
+ * /api/v1/users/userprofile:
  *   get:
  *     summary: Get current user data
  *     tags: [User Profile]
@@ -29,7 +29,7 @@
 
 /**
  * @swagger
- * /api/v1/user/userprofile/updates/name:
+ * /api/v1/users/userprofile/updates/name:
  *   patch:
  *     summary: Update user name
  *     tags: [User Profile]
@@ -54,7 +54,7 @@
 
 /**
  * @swagger
- * /api/v1/user/userprofile/updates/phone:
+ * /api/v1/users/userprofile/updates/phone:
  *   patch:
  *     summary: Update user phone
  *     tags: [User Profile]
@@ -79,7 +79,7 @@
 
 /**
  * @swagger
- * /api/v1/user/userprofile/updates/password:
+ * /api/v1/users/userprofile/updates/password:
  *   patch:
  *     summary: Update user password
  *     tags: [User Profile]
@@ -111,7 +111,7 @@
  */
 /**
  * @swagger
- * /api/v1/user/userprofile/admin:
+ * /api/v1/users/userprofile/admin:
  *   get:
  *     summary: Get current admin ID
  *     tags: [User Profile]
