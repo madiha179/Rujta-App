@@ -6,9 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:Rujta/core/constants.dart';
 import 'package:Rujta/models/cart_line_model.dart';
 import 'package:Rujta/models/drug_model.dart';
-
-/// Cart state + [POST /api/v1/cart](https://rujta-app-production.up.railway.app/api-docs/#/Cart/post_api_v1_cart).
-/// Body (JSON): integer `drug_id`, `branch_id`, `quantity` per Swagger.
 class CartController extends ChangeNotifier {
   CartController();
 
@@ -37,7 +34,7 @@ class CartController extends ChangeNotifier {
     return 'Bearer $t';
   }
 
-  /// Pull cart from server (GET /cart). Safe no-op if endpoint missing.
+
   Future<void> refreshFromServer() async {
     final auth = await _authHeader();
     if (auth == null) {
@@ -58,19 +55,14 @@ class CartController extends ChangeNotifier {
         },
       );
 
-      if (res.statusCode != 200) {
-        return;
-      }
+      if (res.statusCode != 200) return;
 
       final decoded = jsonDecode(res.body);
       final parsed = _parseCartPayload(decoded);
-      if (parsed.isNotEmpty) {
-        _lines
-          ..clear()
-          ..addAll(parsed);
-      }
+      _lines
+        ..clear()
+        ..addAll(parsed);
     } catch (_) {
-      // Keep local lines on network/parsing failure.
     } finally {
       _loading = false;
       notifyListeners();
@@ -79,20 +71,13 @@ class CartController extends ChangeNotifier {
 
   List<CartLineModel> _parseCartPayload(dynamic decoded) {
     dynamic listCandidate;
+
     if (decoded is List) {
       listCandidate = decoded;
     } else if (decoded is Map<String, dynamic>) {
-      final data = decoded['data'];
-      if (data is List) {
-        listCandidate = data;
-      } else if (data is Map<String, dynamic>) {
-        listCandidate = data['items'] ??
-            data['cartItems'] ??
-            data['lines'] ??
-            data['rows'];
-      } else {
-        listCandidate = decoded['items'];
-      }
+      listCandidate = decoded['cart'] ??
+          decoded['data'] ??
+          decoded['items'];
     }
 
     if (listCandidate is! List) return [];
@@ -101,26 +86,29 @@ class CartController extends ChangeNotifier {
     for (final raw in listCandidate) {
       if (raw is! Map) continue;
       final m = Map<String, dynamic>.from(raw);
-      final nested = m['drug'] is Map<String, dynamic>
-          ? Map<String, dynamic>.from(m['drug'] as Map)
-          : null;
 
-      final id = _str(m['drugId'] ??
-          m['drug_id'] ??
-          m['id'] ??
-          nested?['id']);
-      if (id == null) continue;
+      final cartId = _str(m['id']);
 
-      final name = _str(m['name'] ?? nested?['name']) ?? 'Item';
-      final price = _double(m['price'] ??
-          m['unitPrice'] ??
-          m['sellPrice'] ??
-          nested?['price']);
+      final drugId = _str(m['drug_id'] ?? m['drugId']);
+      if (drugId == null) continue;
+
+      final name = _str(m['drug_name'] ?? m['name']) ?? 'Item';
+
+      final price = _double(m['price']);
+
       final qty = _int(m['quantity'] ?? m['qty']) ?? 1;
-      final img = _str(m['imageUrl'] ?? m['image'] ?? nested?['imageUrl']) ?? '';
+
+      final img = _str(
+            m['image_url'] ??
+            m['imgae_url'] ??
+            m['imageUrl'] ??
+            m['image'],
+          ) ??
+          '';
 
       out.add(CartLineModel(
-        drugId: id,
+        cartId: cartId,
+        drugId: drugId,
         name: name,
         unitPrice: price,
         imageUrl: img,
@@ -130,61 +118,25 @@ class CartController extends ChangeNotifier {
     return out;
   }
 
-  String? _str(dynamic v) {
-    if (v == null) return null;
-    final s = v.toString().trim();
-    return s.isEmpty ? null : s;
-  }
 
-  double _double(dynamic v) {
-    if (v == null) return 0;
-    if (v is num) return v.toDouble();
-    return double.tryParse(v.toString()) ?? 0;
-  }
-
-  int? _int(dynamic v) {
-    if (v == null) return null;
-    if (v is int) return v;
-    if (v is double) return v.round();
-    return int.tryParse(v.toString());
-  }
-
-  void _upsertLocal(DrugModel drug, int addQty) {
-    final i = _lines.indexWhere((e) => e.drugId == drug.id);
-    if (i >= 0) {
-      _lines[i].quantity += addQty;
-    } else {
-      _lines.add(CartLineModel(
-        drugId: drug.id,
-        name: drug.name,
-        unitPrice: drug.price,
-        imageUrl: drug.imageUrl,
-        quantity: addQty,
-      ));
-    }
-  }
-
-  /// [POST /api/v1/cart](https://rujta-app-production.up.railway.app/api-docs/#/Cart/post_api_v1_cart)
-  /// JSON body uses integer `drug_id`, `branch_id`, `quantity`.
   Future<String?> addDrug(DrugModel drug, {int quantity = 1}) async {
     final auth = await _authHeader();
-    if (auth == null) {
-      return 'Please sign in to add items to your cart.';
-    }
+    if (auth == null) return 'Please sign in to add items to your cart.';
 
     final drugId = drug.cartDrugId.trim();
     final branchStr = drug.cartBranchId?.trim();
 
     int? branchIdInt =
-        branchStr != null && branchStr.isNotEmpty ? int.tryParse(branchStr) : null;
+        branchStr != null && branchStr.isNotEmpty
+            ? int.tryParse(branchStr)
+            : null;
     branchIdInt ??=
         int.tryParse((await _storage.read(key: _cachedBranchKey)) ?? '');
     branchIdInt ??= kFallbackCartBranchId;
 
     if (branchIdInt == null) {
       return 'Cannot add to cart: missing branch_id. '
-          'Ask backend to include branch_id on each drug (or on the JSON wrapper), '
-          'or set kFallbackCartBranchId in lib/core/constants.dart for testing.';
+          'Set kFallbackCartBranchId in lib/core/constants.dart for testing.';
     }
 
     final drugIdInt = int.tryParse(drugId) ??
@@ -215,7 +167,13 @@ class CartController extends ChangeNotifier {
           )
           .timeout(const Duration(seconds: 25));
 
-      if (res.statusCode == 200 || res.statusCode == 201 || res.statusCode == 204) {
+      if (res.statusCode == 200 ||
+          res.statusCode == 201 ||
+          res.statusCode == 204) {
+        await _storage.write(
+          key: _cachedBranchKey,
+          value: branchIdInt.toString(),
+        );
         _upsertLocal(drug, quantity);
         notifyListeners();
         return null;
@@ -233,14 +191,109 @@ class CartController extends ChangeNotifier {
     }
   }
 
-  /// Local remove (until DELETE /cart is wired in Swagger).
-  void removeLine(String drugId) {
-    _lines.removeWhere((e) => e.drugId == drugId);
-    notifyListeners();
+
+  Future<String?> removeLine(String cartId) async {
+    final auth = await _authHeader();
+    if (auth == null) return 'Please sign in.';
+
+    try {
+      final res = await http
+          .delete(
+            Uri.parse('$_apiRoot/cart/$cartId'),
+            headers: {
+              'Accept': 'application/json',
+              'Authorization': auth,
+            },
+          )
+          .timeout(const Duration(seconds: 25));
+
+      if (res.statusCode == 200 || res.statusCode == 204) {
+        _lines.removeWhere((e) => e.cartId == cartId);
+        notifyListeners();
+        return null;
+      }
+
+      try {
+        final map = jsonDecode(res.body);
+        if (map is Map && map['message'] != null) {
+          return map['message'].toString();
+        }
+      } catch (_) {}
+      return 'Could not remove item (${res.statusCode}).';
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future<String?> clearCart() async {
+    final auth = await _authHeader();
+    if (auth == null) return 'Please sign in.';
+
+    try {
+      final res = await http
+          .delete(
+            Uri.parse('$_apiRoot/cart'),
+            headers: {
+              'Accept': 'application/json',
+              'Authorization': auth,
+            },
+          )
+          .timeout(const Duration(seconds: 25));
+
+      if (res.statusCode == 200 || res.statusCode == 204) {
+        _lines.clear();
+        notifyListeners();
+        return null;
+      }
+
+      try {
+        final map = jsonDecode(res.body);
+        if (map is Map && map['message'] != null) {
+          return map['message'].toString();
+        }
+      } catch (_) {}
+      return 'Could not clear cart (${res.statusCode}).';
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  void _upsertLocal(DrugModel drug, int addQty) {
+    final i = _lines.indexWhere((e) => e.drugId == drug.id);
+    if (i >= 0) {
+      _lines[i].quantity += addQty;
+    } else {
+      _lines.add(CartLineModel(
+        drugId: drug.id,
+        name: drug.name,
+        unitPrice: drug.price,
+        imageUrl: drug.imageUrl,
+        quantity: addQty,
+      ));
+    }
   }
 
   void clearLocal() {
     _lines.clear();
     notifyListeners();
+  }
+
+  String? _str(dynamic v) {
+    if (v == null) return null;
+    final s = v.toString().trim();
+    return s.isEmpty ? null : s;
+  }
+
+  double _double(dynamic v) {
+    if (v == null) return 0;
+    if (v is num) return v.toDouble();
+    return double.tryParse(v.toString()) ?? 0;
+  }
+
+  int? _int(dynamic v) {
+    if (v == null) return null;
+    if (v is int) return v;
+    if (v is double) return v.round();
+    return int.tryParse(v.toString());
   }
 }

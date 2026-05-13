@@ -4,10 +4,11 @@ class CartLineModel {
     required this.drugId,
     required this.name,
     required this.unitPrice,
+    this.cartId,
     this.imageUrl = '',
     this.quantity = 1,
   });
-
+  final String? cartId;
   final String drugId;
   final String name;
   final double unitPrice;
