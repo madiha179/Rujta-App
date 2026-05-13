@@ -1,6 +1,8 @@
 import db from "../config/data.js";
 export const findAllDrugsByLocation=(userlang,userlatt,callback)=>{
   const sql=`SELECT 
+  b.id AS branch_id,
+  d.id AS drug_id,
   d.name AS drug_name,
   p.name AS pharmacy_name,
   d.imgae_url AS image_url,
@@ -22,7 +24,9 @@ pharmacies p ON b.pharmacy_id = p.id
 
 export const searchDrugNameByLocation=(word,userlang,userlatt,callback)=>{
  const sql=`
- SELECT d.name AS drug_name,
+ SELECT b.id AS branch_id,
+ d.id AS drug_id,
+ d.name AS drug_name,
  bd.price AS drug_price,
  d.imgae_url AS image_url,
  p.name AS pharmacy_name,

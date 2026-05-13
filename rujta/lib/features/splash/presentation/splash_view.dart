@@ -4,7 +4,7 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:Rujta/features/on_Boarding/presentation/on_boardin_view.dart';
 import 'package:Rujta/core/utils/size_config.dart';
-import 'package:Rujta/Screens/home.dart';
+import 'package:Rujta/Screens/main_shell_screen.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -62,7 +62,10 @@ class _SplashViewState extends State<SplashView> {
 
       if (token != null && token.isNotEmpty) {
         if (role == "customer") {
-          Get.off(() => HomePage(), transition: Transition.fade);
+          Get.off(
+            () => const MainShellScreen(),
+            transition: Transition.fade,
+          );
         } else {
           Get.off(() => OnBoardinViewBody(), transition: Transition.fade);
         }
