@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key, this.email});
 
-  /// Email the OTP was sent to (from forgot-password flow).
   final String? email;
 
   @override
@@ -16,7 +15,8 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-  final List<TextEditingController> _controllers = List.generate(4, (_) => TextEditingController());
+  final List<TextEditingController> _controllers =
+      List.generate(4, (_) => TextEditingController());
 
   @override
   void initState() {
@@ -48,13 +48,18 @@ class _OtpScreenState extends State<OtpScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: SingleChildScrollView( 
+      body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           children: [
             const SizedBox(height: 20),
-            const Text("OTP Verification", 
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black)),
+            const Text(
+              "OTP Verification",
+              style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
+            ),
             const SizedBox(height: 10),
             Text(
               widget.email != null && widget.email!.isNotEmpty
@@ -65,14 +70,19 @@ class _OtpScreenState extends State<OtpScreen> {
             ),
             const SizedBox(height: 40),
             const Align(
-                alignment: Alignment.centerLeft, 
-                child: Text("OTP Code", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18))),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "OTP Code",
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+            ),
             const SizedBox(height: 20),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildOtpBox(context, index: 0, first: true, last: false),
+                _buildOtpBox(context, index: 0, first: true,  last: false),
                 _buildOtpBox(context, index: 1, first: false, last: false),
                 _buildOtpBox(context, index: 2, first: false, last: false),
                 _buildOtpBox(context, index: 3, first: false, last: true),
@@ -85,75 +95,115 @@ class _OtpScreenState extends State<OtpScreen> {
               width: double.infinity,
               height: 56,
               child: ElevatedButton(
-                onPressed: vm.isLoading ? null : () async {
-                  List<String> code = _controllers.map((e) => e.text).toList();
-                  String? token = await vm.verifyOtp(code);
-                  if (!mounted) return;
-                  if (token != null && token.isNotEmpty) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ResetPasswordScreen(token: token),
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Invalid OTP code or expired token, please try again"),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                  }
-                },
+                onPressed: vm.isLoading
+                    ? null
+                    : () async {
+                        List<String> code =
+                            _controllers.map((e) => e.text).toList();
+
+                        if (vm.isSignupFlow) {
+                          bool success =
+                              await vm.verifyEmail(context, code);
+                          if (!mounted) return;
+                          if (success) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    "Email verified! Please sign in."),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, '/login', (route) => false);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    "Invalid or expired OTP, please try again."),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        } else {
+                          String? token = await vm.verifyOtp(code);
+                          if (!mounted) return;
+                          if (token != null && token.isNotEmpty) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ResetPasswordScreen(token: token),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    "Invalid OTP code or expired token, please try again."),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        }
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kMainColor,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16)),
                 ),
-                child: vm.isLoading 
+                child: vm.isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text("Verify", style: TextStyle(color: Colors.white, fontSize: 16)),
+                    : const Text("Verify",
+                        style:
+                            TextStyle(color: Colors.white, fontSize: 16)),
               ),
             ),
-            
+
             const SizedBox(height: 20),
-            
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
-                  onPressed: vm.canResend ? () => vm.resendCode() : null,
+                  onPressed:
+                      vm.canResend ? () => vm.resendCode() : null,
                   child: Text(
-                    "Resend code to",
+                    "Resend code",
                     style: TextStyle(
                       color: vm.canResend ? kMainColor : subtitleColor,
-                      fontWeight: vm.canResend ? FontWeight.bold : FontWeight.normal,
+                      fontWeight: vm.canResend
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                     ),
                   ),
                 ),
                 Text(
                   vm.timerText,
-                  style: const TextStyle(color: Color(0xFF1F2937), fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      color: Color(0xFF1F2937),
+                      fontWeight: FontWeight.bold),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildOtpBox(BuildContext context, {required int index, required bool first, required bool last}) {
+  Widget _buildOtpBox(BuildContext context,
+      {required int index, required bool first, required bool last}) {
     return Container(
       height: 70,
-      width: 65, 
+      width: 65,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300), 
+        border: Border.all(color: Colors.grey.shade300),
       ),
       child: TextField(
         controller: _controllers[index],
-        autofocus: first, 
+        autofocus: first,
         onChanged: (value) {
           if (value.length == 1 && last == false) {
             FocusScope.of(context).nextFocus();
@@ -163,7 +213,8 @@ class _OtpScreenState extends State<OtpScreen> {
           }
         },
         textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+            fontSize: 24, fontWeight: FontWeight.bold),
         keyboardType: TextInputType.number,
         inputFormatters: [
           LengthLimitingTextInputFormatter(1),

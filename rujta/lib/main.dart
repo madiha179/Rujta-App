@@ -11,6 +11,7 @@ import 'package:Rujta/Screens/main_shell_screen.dart';
 import 'package:Rujta/Screens/OTP_verification.dart';
 import 'package:Rujta/view_model/cart_controller.dart';
 import 'package:Rujta/Screens/admin_profile_screen.dart';
+import 'package:Rujta/view_model/OTP_view_model.dart';
 
 void main() {
   runApp(
@@ -37,10 +38,13 @@ class Rujta extends StatelessWidget {
         '/register':             (context) => const RegisterScreen(),
         '/UserProfileScreen':    (context) => const UserProfileScreen(),
         '/ForgetPasswordScreen': (context) => const ForgetPasswordScreen(),
-        '/OtpVerification':      (context) => const OtpScreen(),
+        '/OtpVerification':      (context) => ChangeNotifierProvider(
+              create: (_) => OtpViewModel()..isSignupFlow = true,
+              child: const OtpScreen(),
+            ),
         '/Home':                 (context) => const MainShellScreen(),
         '/InventoryManagement':  (context) => const InventoryManagementScreen(),
-        '/AdminProfile':        (context) => const AdminProfileScreen(),
+        '/AdminProfile':         (context) => const AdminProfileScreen(),
       },
     );
   }

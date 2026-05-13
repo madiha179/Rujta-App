@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class RegisterViewModel {
-  final TextEditingController nameController = TextEditingController();
+  final TextEditingController nameController  = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController passController = TextEditingController();
+  final TextEditingController passController  = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
 
   bool isValidEmail(String email) {
@@ -27,7 +27,6 @@ class RegisterViewModel {
     String password,
     String phone,
   ) async {
-    // ✅ الـ endpoint الصح من الـ API docs
     final url = Uri.parse(
       "https://rujta-app-production.up.railway.app/api/v1/users/signup",
     );
@@ -36,23 +35,22 @@ class RegisterViewModel {
         url,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
-          "name": name,
-          "email": email,
-          "password": password,
-          "confirmPassword": password, // ✅ مطلوب في الـ API
-          "phone": phone,              // ✅ مطلوب في الـ API
+          "name":            name,
+          "email":           email,
+          "password":        password,
+          "confirmPassword": password,
+          "phone":           phone,
         }),
       );
       final data = jsonDecode(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        _showMessage(context, "تم إنشاء الحساب! تحقق من إيميلك للـ OTP");
-        // ✅ بعد التسجيل لازم يتحقق من الإيميل بالـ OTP
+        _showMessage(context, "Account created! Please verify your email.");
         Navigator.pushReplacementNamed(context, '/OtpVerification');
       } else {
-        _showMessage(context, data["message"] ?? "فشل التسجيل");
+        _showMessage(context, data["message"] ?? "Registration failed");
       }
     } catch (err) {
-      _showMessage(context, "حدث خطأ، تحقق من الاتصال");
+      _showMessage(context, "Something went wrong, check your connection");
       debugPrint('Register error: $err');
     }
   }
@@ -64,19 +62,19 @@ class RegisterViewModel {
     String phone = phoneController.text.trim();
 
     if (name.isEmpty) {
-      _showMessage(context, "من فضلك أدخل اسمك");
+      _showMessage(context, "Please enter your name");
       return;
     }
     if (email.isEmpty || !isValidEmail(email)) {
-      _showMessage(context, "من فضلك أدخل إيميل صحيح");
+      _showMessage(context, "Please enter a valid email");
       return;
     }
     if (pass.isEmpty || !isValidPass(pass)) {
-      _showMessage(context, "كلمة المرور لازم تكون 8 حروف على الأقل");
+      _showMessage(context, "Password must be at least 8 characters");
       return;
     }
     if (phone.isEmpty || !isValidPhone(phone)) {
-      _showMessage(context, "من فضلك أدخل رقم هاتف مصري صحيح");
+      _showMessage(context, "Please enter a valid Egyptian phone number");
       return;
     }
     await registerApi(context, name, email, pass, phone);
