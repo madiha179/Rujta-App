@@ -1,10 +1,13 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class ResetPasswordViewModel extends ChangeNotifier {
   final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
   bool obscureNewPassword = true;
   bool obscureConfirmPassword = true;
@@ -43,7 +46,8 @@ class ResetPasswordViewModel extends ChangeNotifier {
       return;
     }
 
-    if (token.trim().isEmpty) {
+    final trimmedToken = token.trim();
+    if (trimmedToken.isEmpty) {
       _showMessage(context, "Invalid reset token. Please request OTP again");
       return;
     }
@@ -52,8 +56,9 @@ class ResetPasswordViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
+      // Encode token so +, /, etc. in tokens are not mangled in the path.
       final url = Uri.parse(
-        'https://rujta-app-production.up.railway.app/api/v1/users/reset-password/$token',
+        'https://rujta-app-production.up.railway.app/api/v1/users/reset-password/${Uri.encodeComponent(trimmedToken)}',
       );
 
       final response = await http.post(
@@ -67,20 +72,33 @@ class ResetPasswordViewModel extends ChangeNotifier {
         }),
       );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      final ok = response.statusCode == 200 ||
+          response.statusCode == 201 ||
+          response.statusCode == 204;
+      if (ok) {
         _showMessage(context, "Password reset successful");
         Navigator.pop(context);
-      } else if (response.statusCode == 400) {
-        final data = jsonDecode(response.body);
-        _showMessage(
-          context,
-          data["message"]?.toString() ?? "Invalid or expired token",
-        );
-      } else {
-        _showMessage(context, "Something went wrong. Please try again");
+        return;
       }
+
+      _showMessage(context, _messageFromResponse(response));
+    } on TimeoutException {
+      if (!context.mounted) return;
+      _showMessage(
+        context,
+        "Request timed out. Try again (Railway may be waking up).",
+      );
     } catch (e) {
-      _showMessage(context, "Something went wrong. Please try again");
+      if (!context.mounted) return;
+      final isNetwork = e is http.ClientException ||
+          e.toString().contains('SocketException') ||
+          e.toString().contains('Failed host lookup');
+      _showMessage(
+        context,
+        isNetwork
+            ? "Network error. Check your connection."
+            : "Something went wrong. Please try again.",
+      );
     } finally {
       isSubmitting = false;
       notifyListeners();
@@ -91,6 +109,27 @@ class ResetPasswordViewModel extends ChangeNotifier {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
+  }
+
+  String _messageFromResponse(http.Response response) {
+    final body = response.body.trim();
+    if (body.isEmpty) {
+      return "Server returned ${response.statusCode}. Check API field names or token.";
+    }
+    try {
+      final data = jsonDecode(body);
+      if (data is Map) {
+        final m = data['message'];
+        if (m != null) return m.toString();
+        // Some APIs return { "errors": { "password": ["..."] } }
+        final errors = data['errors'];
+        if (errors is Map && errors.isNotEmpty) {
+          final first = errors.values.first;
+          if (first is List && first.isNotEmpty) return first.first.toString();
+        }
+      }
+    } catch (_) {}
+    return "Error ${response.statusCode}. Ask backend for reset-password JSON body schema.";
   }
 
   @override

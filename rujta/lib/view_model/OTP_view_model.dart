@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class OtpViewModel extends ChangeNotifier {
+  bool _disposed = false;
 
   int _secondsRemaining = 120; //2 minutes
   Timer? _timer;
@@ -28,13 +29,17 @@ class OtpViewModel extends ChangeNotifier {
     _timer?.cancel(); 
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_disposed) {
+        timer.cancel();
+        return;
+      }
       if (_secondsRemaining > 0) {
         _secondsRemaining--;
-        notifyListeners(); 
+        _safeNotifyListeners();
       } else {
         _canResend = true;
         timer.cancel();
-        notifyListeners(); 
+        _safeNotifyListeners();
       }
     });
   }
@@ -45,7 +50,7 @@ class OtpViewModel extends ChangeNotifier {
     if (_otpCode.length < 4) return null;
 
     _isLoading = true;
-    notifyListeners();
+    _safeNotifyListeners();
 
     try {
       final url = Uri.parse(
@@ -84,8 +89,13 @@ class OtpViewModel extends ChangeNotifier {
       return null;
     } finally {
       _isLoading = false;
-      notifyListeners();
+      _safeNotifyListeners();
     }
+  }
+
+  void _safeNotifyListeners() {
+    if (_disposed) return;
+    notifyListeners();
   }
 
   void resendCode() {
@@ -97,7 +107,8 @@ class OtpViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    _timer?.cancel(); 
+    _disposed = true;
+    _timer?.cancel();
     super.dispose();
   }
 }

@@ -64,19 +64,22 @@ class _nameState extends State<ForgetPasswordScreen> {
           ),
               ),
               SizedBox(height: 42,),
-          GestureDetector(
-          onTap: (){
-            viewModel.resetPassword(context);
-          },
-            child: Container(
-            
-            height: 50,
-            decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: kMainColor),
-            child: Center(child: Text('Reset Password',
-            style: TextStyle(color: Colors.white),)),),
-          )
+              SizedBox(
+                height: 50,
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => viewModel.resetPassword(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kMainColor,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text('Reset Password'),
+                ),
+              )
          ] ),
         ),
       ),
