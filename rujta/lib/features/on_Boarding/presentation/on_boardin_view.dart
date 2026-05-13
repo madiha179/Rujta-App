@@ -28,10 +28,9 @@ class _OnBoardingViewBodyState extends State<OnBoardinViewBody> {
   void _handleButtonPress() {
     final currentPage = pageController?.page?.round() ?? 0;
     if (currentPage == 2) {
-      // آخر صفحة — روح للـ Login
+
       Get.off(() => LoginScreen(), transition: Transition.fade);
     } else {
-      // انتقل للصفحة الجاية
       pageController?.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -66,7 +65,7 @@ class _OnBoardingViewBodyState extends State<OnBoardinViewBody> {
             text: pageController!.hasClients
                 ? (pageController?.page?.round() == 2 ? 'Get started' : 'Next')
                 : 'Next',
-            onPressed: _handleButtonPress, // ✅
+            onPressed: _handleButtonPress, 
           ),
         ),
       ],

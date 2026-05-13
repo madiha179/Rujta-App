@@ -31,6 +31,7 @@ class PageViewItem extends StatelessWidget {
               fontSize: 20,
               color: Color(0xff2f2e41),
               fontWeight: FontWeight.w600,
+              decoration: TextDecoration.none,
             ),
           ),
 
@@ -44,6 +45,7 @@ class PageViewItem extends StatelessWidget {
               fontFamily: 'Poppins',
               fontSize: 15,
               color: Color(0xff78787c),
+              decoration: TextDecoration.none,
             ),
           ),
         ],

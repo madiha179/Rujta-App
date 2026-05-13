@@ -27,6 +27,7 @@ class CustomGeneralButton extends StatelessWidget {
               fontSize: 14,
               color: Color(0xffffffff),
               fontWeight: FontWeight.w500,
+              decoration: TextDecoration.none,
             ),
           ),
         ),
