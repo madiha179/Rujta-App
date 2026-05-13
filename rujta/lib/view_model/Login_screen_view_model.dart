@@ -12,12 +12,11 @@ class LoginScreenViewModel {
     return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
   }
 
-  bool isValidPass(String pass) {
-    return RegExp(
-      r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#\$&*~]).{8,}$',
-    ).hasMatch(pass);
-  }
-
+ bool isValidPass(String pass) {
+  return RegExp(
+    r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{6,}$',
+  ).hasMatch(pass);
+}
   Future<void> loginApi(
     BuildContext context,
     String email,
@@ -40,10 +39,11 @@ class LoginScreenViewModel {
         await _storage.write(key: 'auth_token', value: token);
         //store role for nav
         String role = data["role"] ?? data["data"]["user"]["role"] ;
+        print("ROLE: $role");
         await _storage.write(key: 'user_role', value: role);
         if (!context.mounted) return;
         if (role == "admin") {
-          Navigator.pushReplacementNamed(context, '/');
+          Navigator.pushReplacementNamed(context, '/InventoryManagement');
         } else {
           Navigator.pushReplacementNamed(context, '/Home');
         }

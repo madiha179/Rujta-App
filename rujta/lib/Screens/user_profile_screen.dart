@@ -147,7 +147,7 @@ class _MyWidgetState extends State<UserProfileScreen> {
 
   Future<void> _handleSignOut(BuildContext context) async {
     const storage = FlutterSecureStorage();
-    await storage.delete(key: 'auth_token');
+    await storage.deleteAll();
     Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Signed out successfully")));
   }

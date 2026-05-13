@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:Rujta/Screens/Forget_password_screen.dart';
-import 'package:Rujta/Screens/register_screen.dart';
-import 'package:Rujta/view_model/Login_screen_view_model.dart';
+import 'package:Rujta/view_model/register_view_model.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePassword = true;
   static const Color _green = Color(0xFF4CAF50);
-  final LoginScreenViewModel viewModel = LoginScreenViewModel();
+  final RegisterViewModel viewModel = RegisterViewModel();
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () => Navigator.pop(context),
                   child: const Icon(
                     Icons.chevron_left,
                     size: 28,
@@ -42,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 48),
 
               const Text(
-                'Sign in now',
+                'Sign up now',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 26,
@@ -54,23 +52,23 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 10),
 
               const Text(
-                'Please sign in to continue our app',
+                'Please fill the details and create account',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 14, color: Colors.black45),
               ),
 
-              const SizedBox(height: 48),
+              const SizedBox(height: 40),
 
+              // ── Name ──────────────────────────────────────────────────
               TextFormField(
-                controller: viewModel.emailController,
-                keyboardType: TextInputType.emailAddress,
+                controller: viewModel.nameController,
+                keyboardType: TextInputType.name,
                 textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(
-                  hintText: 'Email Address',
+                  hintText: 'Full Name',
                   hintStyle: TextStyle(color: Colors.black54, fontSize: 15),
                   enabledBorder: UnderlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color(0xFFDDDDDD), width: 1.2),
+                    borderSide: BorderSide(color: Color(0xFFDDDDDD), width: 1.2),
                   ),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: _green, width: 1.5),
@@ -81,6 +79,47 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: 24),
 
+              // ── Email ─────────────────────────────────────────────────
+              TextFormField(
+                controller: viewModel.emailController,
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                decoration: const InputDecoration(
+                  hintText: 'Email Address',
+                  hintStyle: TextStyle(color: Colors.black54, fontSize: 15),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xFFDDDDDD), width: 1.2),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: _green, width: 1.5),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // ── Phone ─────────────────────────────────────────────────
+              TextFormField(
+                controller: viewModel.phoneController,
+                keyboardType: TextInputType.phone,
+                textInputAction: TextInputAction.next,
+                decoration: const InputDecoration(
+                  hintText: 'Phone Number (e.g. 01012345678)',
+                  hintStyle: TextStyle(color: Colors.black54, fontSize: 15),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xFFDDDDDD), width: 1.2),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: _green, width: 1.5),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // ── Password ──────────────────────────────────────────────
               TextFormField(
                 controller: viewModel.passController,
                 obscureText: _obscurePassword,
@@ -104,8 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   enabledBorder: const UnderlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color(0xFFDDDDDD), width: 1.2),
+                    borderSide: BorderSide(color: Color(0xFFDDDDDD), width: 1.2),
                   ),
                   focusedBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(color: _green, width: 1.5),
@@ -114,37 +152,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              const SizedBox(height: 10),
-
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(
-                        context, '/ForgetPasswordScreen');
-                  },
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                  child: const Text(
-                    'Forget Password?',
-                    style: TextStyle(
-                      color: _green,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
+              const SizedBox(height: 6),
+              const Text(
+                'Password must be 8 characters',
+                style: TextStyle(color: Colors.black38, fontSize: 12),
               ),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: 32),
 
               SizedBox(
                 height: 52,
                 child: ElevatedButton(
-                  onPressed: () => viewModel.login(context),
+                  onPressed: () => viewModel.register(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _green,
                     foregroundColor: Colors.white,
@@ -154,9 +173,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   child: const Text(
-                    'Sign In',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    'Sign Up',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -167,15 +185,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    "Don't have an account? ",
+                    "Already have an account? ",
                     style: TextStyle(color: Colors.black54, fontSize: 14),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/register');
-                    },
+                    onTap: () => Navigator.pop(context),
                     child: const Text(
-                      'Sign up',
+                      'Sign in',
                       style: TextStyle(
                         color: _green,
                         fontSize: 14,
@@ -196,8 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    viewModel.emailController.dispose();
-    viewModel.passController.dispose();
+    viewModel.dispose();
     super.dispose();
   }
 }
