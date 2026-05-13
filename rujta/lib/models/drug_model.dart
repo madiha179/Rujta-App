@@ -7,6 +7,15 @@ class DrugModel {
   final String imageUrl;
   final String locationLabel;
 
+  /// Catalog drug id for cart API (`drug_id`), when different from [id].
+  final String? catalogDrugId;
+
+  /// Pharmacy / branch id for cart API (`branch_id`).
+  final String? branchId;
+
+  /// `branch_drug_id` / stock line id — some cart setups use this as `drug_id`.
+  final String? branchDrugStockId;
+
   const DrugModel({
     required this.id,
     required this.name,
@@ -15,7 +24,15 @@ class DrugModel {
     this.discountPercent,
     this.imageUrl = '',
     this.locationLabel = '',
+    this.catalogDrugId,
+    this.branchId,
+    this.branchDrugStockId,
   });
+
+  /// Values expected by POST `/api/v1/cart` (snake_case body).
+  String get cartDrugId => catalogDrugId ?? id;
+
+  String? get cartBranchId => branchId;
 
   bool get hasDiscount =>
       discountPercent != null ||
@@ -36,7 +53,9 @@ class DrugModel {
 
   static String? _firstNonEmptyString(List<dynamic> candidates) {
     for (final c in candidates) {
+      if (c == null) continue;
       if (c is String && c.trim().isNotEmpty) return c.trim();
+      if (c is num) return c.toString();
     }
     return null;
   }
@@ -47,9 +66,88 @@ class DrugModel {
     final nestedMap =
         nested is Map<String, dynamic> ? nested : null;
 
+    Map<String, dynamic>? nestedDrugBranch;
+    Map<String, dynamic>? nestedDrugPharmacy;
+    if (nestedMap != null) {
+      final nb = nestedMap['branch'];
+      if (nb is Map) nestedDrugBranch = Map<String, dynamic>.from(nb);
+      final np = nestedMap['pharmacy'];
+      if (np is Map) nestedDrugPharmacy = Map<String, dynamic>.from(np);
+    }
+
+    dynamic branchRaw = d['branch'];
+    if (branchRaw is Map) {
+      final bm = Map<String, dynamic>.from(branchRaw);
+      branchRaw =
+          bm['branch_id'] ??
+          bm['branchId'] ??
+          bm['id'] ??
+          bm['pharmacy_id'];
+    }
+
+    String? idFromNestedMap(Map<String, dynamic>? map) {
+      if (map == null) return null;
+      return _firstNonEmptyString([
+        map['branch_id'],
+        map['branchId'],
+        map['id'],
+        map['pharmacy_id'],
+        map['pharmacyId'],
+        map['pharmacy_branch_id'],
+      ]);
+    }
+
+    Map<String, dynamic>? nestedPh(Map? m) =>
+        m is Map<String, dynamic> ? m : (m != null ? Map<String, dynamic>.from(m) : null);
+
+    final pharmacyMap = nestedPh(d['pharmacy'] as Map?);
+    final pharmacyBranch = pharmacyMap != null
+        ? idFromNestedMap(pharmacyMap)
+        : _firstNonEmptyString([d['pharmacy']]);
+
+    final nearestPh = nestedPh(d['nearest_pharmacy'] as Map?) ??
+        nestedPh(d['nearestPharmacy'] as Map?) ??
+        nestedPh(d['pharmacy_branch'] as Map?) ??
+        nestedPh(d['PharmacyBranch'] as Map?);
+
+    final branchId = _firstNonEmptyString([
+      d['branch_id'],
+      d['branchId'],
+      d['pharmacy_id'],
+      d['pharmacyId'],
+      d['pharmacy_branch_id'],
+      d['PharmacyBranchId'],
+      d['store_id'],
+      d['storeId'],
+      nestedMap?['branch_id'],
+      nestedMap?['branchId'],
+      idFromNestedMap(nestedMap),
+      idFromNestedMap(nestedDrugBranch),
+      idFromNestedMap(nestedDrugPharmacy),
+      pharmacyBranch,
+      idFromNestedMap(nearestPh),
+      if (branchRaw != null) branchRaw.toString(),
+    ]);
+
+    final catalogDrugId = _firstNonEmptyString([
+      d['drug_id'],
+      d['drugId'],
+      nestedMap?['drug_id'],
+      nestedMap?['drugId'],
+      nestedMap?['id'],
+    ]);
+
+    final branchDrugStockId = _firstNonEmptyString([
+      d['branch_drug_id'],
+      d['branchDrugId'],
+      d['branchDrug_id'],
+    ]);
+
     double priceNum() =>
         _asDouble(
               d['price'] ??
+                  d['drug_price'] ??
+                  d['drugPrice'] ??
                   d['sell_price'] ??
                   d['sellPrice'] ??
                   d['current_price'] ??
@@ -91,10 +189,18 @@ class DrugModel {
         _firstNonEmptyString([
               d['location'],
               d['city'],
+              d['pharmacy_name'],
+              d['pharmacyName'],
               d['branch_name'],
               d['branchName'],
               d['address'],
               d['region'],
+              nestedMap?['branch_name'],
+              nestedMap?['branchName'],
+              nestedDrugBranch?['name'],
+              nestedDrugPharmacy?['name'],
+              pharmacyMap?['name'],
+              nearestPh?['name'],
             ]) ??
         '';
 
@@ -120,6 +226,9 @@ class DrugModel {
       discountPercent: discountPct,
       imageUrl: imageUrl,
       locationLabel: locationLabel,
+      catalogDrugId: catalogDrugId,
+      branchId: branchId,
+      branchDrugStockId: branchDrugStockId,
     );
   }
 }

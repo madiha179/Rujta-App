@@ -4,9 +4,10 @@ import 'package:Rujta/models/drug_model.dart';
 
 
 class DrugCard extends StatelessWidget {
-  const DrugCard({super.key, required this.drug});
+  const DrugCard({super.key, required this.drug, this.onTap});
 
   final DrugModel drug;
+  final VoidCallback? onTap;
 
   String _priceLabel(double p) =>
       '${p % 1 == 0 ? p.toStringAsFixed(0) : p.toStringAsFixed(2)} EGP';
@@ -33,7 +34,7 @@ class DrugCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(14),
       child: InkWell(
         borderRadius: BorderRadius.circular(14),
-        onTap: () {},
+        onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),

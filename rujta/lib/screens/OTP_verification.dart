@@ -88,6 +88,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 onPressed: vm.isLoading ? null : () async {
                   List<String> code = _controllers.map((e) => e.text).toList();
                   String? token = await vm.verifyOtp(code);
+                  if (!mounted) return;
                   if (token != null && token.isNotEmpty) {
                     Navigator.push(
                         context,
