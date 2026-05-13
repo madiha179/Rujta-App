@@ -17,16 +17,17 @@ export const getAllDrugsByLocationController = (req, res, next) => {
 
     //const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
 
-    const updatedResult = result.map(drug => {
-      const safeImagePath = drug.image_url ? drug.image_url.replace(/ /g, '%20') : null;
-      return {
-        id:  drug.drug_name,
-        name: drug.drug_name,
-        price: drug.drug_price,
-        locationLabel: drug.pharmacy_name,
-         image_url:  drug.image_url || null
-      };
-    });
+  const updatedResult = result.map(drug => {
+  return {
+    id: drug.drug_id,          
+    drug_id: drug.drug_id,     
+    branch_id: drug.branch_id,  
+    name: drug.drug_name,
+    price: drug.drug_price,
+    locationLabel: drug.pharmacy_name,
+    image_url: drug.image_url || null
+  };
+});
 
     return res.status(200).json({
       status: 'success',
@@ -62,11 +63,14 @@ export const searchDrugByLocationController = (req, res, next) => {
    // const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
 
     const updatedResult = result.map(drug => ({
-      id: drug.drug_name,
-      name: drug.drug_name,
-      price: drug.drug_price,
-      locationLabel: drug.pharmacy_name,
-       image_url:  drug.image_url || null    }));
+  id: drug.drug_id,          
+  drug_id: drug.drug_id,      
+  branch_id: drug.branch_id,  
+  name: drug.drug_name,
+  price: drug.drug_price,
+  locationLabel: drug.pharmacy_name,
+  image_url: drug.image_url || null
+}));
 
     return res.status(200).json({
       status: 'success',

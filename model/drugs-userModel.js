@@ -2,6 +2,8 @@ import db from "../config/data.js";
 export const findAllDrugsByLocation=(userlang,userlatt,callback)=>{
   const sql=`SELECT 
   d.name AS drug_name,
+  bd.branch_id,
+   bd.drug_id, 
   p.name AS pharmacy_name,
   d.imgae_url AS image_url,
   bd.price AS drug_price,
@@ -24,6 +26,8 @@ export const searchDrugNameByLocation=(word,userlang,userlatt,callback)=>{
  const sql=`
  SELECT d.name AS drug_name,
  bd.price AS drug_price,
+ bd.branch_id,
+   bd.drug_id, 
  d.imgae_url AS image_url,
  p.name AS pharmacy_name,
  (ST_Distance_sphere(
