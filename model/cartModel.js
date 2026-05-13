@@ -10,6 +10,8 @@ export const getAllCart = (user_id, callback) => {
   const sql = `
     SELECT 
       cart.id,
+      cart.drug_id,
+      cart.branch_id,
       d.name AS drug_name,
       p.name AS pharmacy_name,
       cart.quantity,
